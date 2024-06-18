@@ -4,10 +4,13 @@ import congestion.calculator.congestiontaxcalculator.enums.Vehicle;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.HashSet;
 import java.util.NavigableMap;
+import java.util.Set;
 import java.util.TreeMap;
 
 @Service
@@ -27,6 +30,31 @@ public class TollFeeService {
         feeSchedule.put(LocalTime.of(18, 30), 0);
     }
 
+    private static final Set<LocalDate> tollFreeDates2013 = new HashSet<>();
+    static {
+        tollFreeDates2013.add(LocalDate.of(2013, Month.JANUARY, 1));
+        tollFreeDates2013.add(LocalDate.of(2013, Month.MARCH, 28));
+        tollFreeDates2013.add(LocalDate.of(2013, Month.MARCH, 29));
+        tollFreeDates2013.add(LocalDate.of(2013, Month.APRIL, 1));
+        tollFreeDates2013.add(LocalDate.of(2013, Month.APRIL, 30));
+        tollFreeDates2013.add(LocalDate.of(2013, Month.MAY, 1));
+        tollFreeDates2013.add(LocalDate.of(2013, Month.MAY, 8));
+        tollFreeDates2013.add(LocalDate.of(2013, Month.MAY, 9));
+        tollFreeDates2013.add(LocalDate.of(2013, Month.JUNE, 5));
+        tollFreeDates2013.add(LocalDate.of(2013, Month.JUNE, 6));
+        tollFreeDates2013.add(LocalDate.of(2013, Month.JUNE, 21));
+        // Add all days in July
+        for (int day = 1; day <= Month.JULY.maxLength(); day++) {
+            tollFreeDates2013.add(LocalDate.of(2013, Month.JULY, day));
+        }
+        tollFreeDates2013.add(LocalDate.of(2013, Month.NOVEMBER, 1));
+        tollFreeDates2013.add(LocalDate.of(2013, Month.DECEMBER, 24));
+        tollFreeDates2013.add(LocalDate.of(2013, Month.DECEMBER, 25));
+        tollFreeDates2013.add(LocalDate.of(2013, Month.DECEMBER, 26));
+        tollFreeDates2013.add(LocalDate.of(2013, Month.DECEMBER, 31));
+    }
+
+
     public int getTollFee(LocalDateTime date, Vehicle vehicle) {
         if (isTollFreeDate(date) || isTollFreeVehicle(vehicle)) {
             return 0;
@@ -44,26 +72,14 @@ public class TollFeeService {
         return vehicle.isTollFree();
     }
 
-    private boolean isTollFreeDate(LocalDateTime date) {
-        int year = date.getYear();
-        Month month = date.getMonth();
-        DayOfWeek day = date.getDayOfWeek();
-        int dayOfMonth = date.getDayOfMonth();
-
-        if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) return true;
-
-        if (year == 2013) {
-            if ((month == JANUARY && dayOfMonth == 1) ||
-                (month == MARCH && (dayOfMonth == 28 || dayOfMonth == 29)) ||
-                (month == APRIL && (dayOfMonth == 1 || dayOfMonth == 30)) ||
-                (month == MAY && (dayOfMonth == 1 || dayOfMonth == 8 || dayOfMonth == 9)) ||
-                (month == JUNE && (dayOfMonth == 5 || dayOfMonth == 6 || dayOfMonth == 21)) ||
-                (month == JULY) ||
-                (month == NOVEMBER && dayOfMonth == 1) ||
-                (month == DECEMBER && (dayOfMonth == 24 || dayOfMonth == 25 || dayOfMonth == 26 || dayOfMonth == 31))) {
-                return true;
-            }
+    public boolean isTollFreeDate(LocalDateTime date) {
+        if (isWeekend(date.getDayOfWeek())) {
+            return true;
         }
-        return false;
+
+        return date.getYear() == 2013 && tollFreeDates2013.contains(date.toLocalDate());
     }
-}
+
+    private boolean isWeekend(DayOfWeek day) {
+        return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
+    }}
