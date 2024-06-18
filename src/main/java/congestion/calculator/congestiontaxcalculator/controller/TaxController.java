@@ -21,7 +21,7 @@ public class TaxController {
 
     @GetMapping
     public TaxResponse getTax(@RequestParam Vehicle vehicle,
-                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date[] dates) {
+                              @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss") Date[] dates) {
         return congestionTaxCalculatorService.getTax(vehicle, dates);
     }
 }

@@ -61,7 +61,9 @@ public class CongestionTaxCalculatorService {
         else if (hour == 6 && minute >= 30 && minute <= 59) return 13;
         else if (hour == 7 && minute >= 0 && minute <= 59) return 18;
         else if (hour == 8 && minute >= 0 && minute <= 29) return 13;
-        else if (hour >= 8 && hour <= 14 && minute >= 30 && minute <= 59) return 8; // possible bug
+        //else if (hour >= 8 && hour <= 14 && minute >= 30 && minute <= 59) return 8; // possible bug
+        else if (hour == 8 && minute >= 30) return 8;
+        else if (hour >= 9 && hour < 15) return 8; // fixed
         else if (hour == 15 && minute >= 0 && minute <= 29) return 13;
         else if (hour == 15 && minute >= 0 || hour == 16 && minute <= 59) return 18; // it should be 15:30
         else if (hour == 17 && minute >= 0 && minute <= 59) return 13;
@@ -69,7 +71,7 @@ public class CongestionTaxCalculatorService {
         else return 0;
     }
 
-    private Boolean isTollFreeDate(Date date) {
+    private boolean isTollFreeDate(Date date) {
         int year = date.getYear();
         int month = date.getMonth() + 1;
         int day = date.getDay() + 1;
