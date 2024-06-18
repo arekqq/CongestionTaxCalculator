@@ -61,14 +61,20 @@ public class TollFeeService {
         }
         LocalTime time = date.toLocalTime();
         LocalTime next = feeSchedule.ceilingKey(time);
-        if (next == null) return 0;
+        if (next == null) {
+            return 0;
+        }
         LocalTime prev = feeSchedule.floorKey(time);
-        if (next.isAfter(prev)) return feeSchedule.get(prev);
+        if (next.isAfter(prev)) {
+            return feeSchedule.get(prev);
+        }
         return 0;
     }
 
     private boolean isTollFreeVehicle(Vehicle vehicle) {
-        if (vehicle == null) return false;
+        if (vehicle == null) {
+            return false;
+        }
         return vehicle.isTollFree();
     }
 

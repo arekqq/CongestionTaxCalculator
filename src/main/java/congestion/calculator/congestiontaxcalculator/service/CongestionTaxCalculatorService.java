@@ -27,20 +27,21 @@ public class CongestionTaxCalculatorService {
 
         for (LocalDateTime date : dates) {
             int nextFee = tollFeeService.getTollFee(date, vehicle);
-            int tempFee = tollFeeService.getTollFee(intervalStart, vehicle);
+            int maxRate = 0;
+            long minutes = Duration.between(intervalStart, date).toMinutes();
 
-            long minutes = Duration.between(date, intervalStart).toMinutes();
-
+            totalFee += nextFee;
             if (minutes <= shortTimePeriod) {
-                if (totalFee > 0) totalFee -= tempFee;
-                if (nextFee >= tempFee) tempFee = nextFee;
-                totalFee += tempFee;
-            } else {
-                totalFee += nextFee;
+                if (nextFee > maxRate) {
+                    maxRate = nextFee;
+                }
+                totalFee = maxRate;
             }
         }
 
-        if (totalFee > maxFee) totalFee = maxFee;
+        if (totalFee > maxFee) {
+            totalFee = maxFee;
+        }
         return new TaxResponse(totalFee);
     }
 }
