@@ -63,9 +63,11 @@ public class CongestionTaxCalculatorService {
         else if (hour == 8 && minute >= 0 && minute <= 29) return 13;
         //else if (hour >= 8 && hour <= 14 && minute >= 30 && minute <= 59) return 8; // possible bug
         else if (hour == 8 && minute >= 30) return 8;
-        else if (hour >= 9 && hour < 15) return 8; // fixed
+        else if (hour >= 9 && hour < 15) return 8; // fixed - TODO write test cases
         else if (hour == 15 && minute >= 0 && minute <= 29) return 13;
-        else if (hour == 15 && minute >= 0 || hour == 16 && minute <= 59) return 18; // it should be 15:30
+        //else if (hour == 15 && minute >= 0 || hour == 16 && minute <= 59) return 18; // it should be 15:30
+        else if (hour == 15 && minute >= 30) return 18;
+        else if (hour == 16) return 18; // fixed - TODO write test cases
         else if (hour == 17 && minute >= 0 && minute <= 59) return 13;
         else if (hour == 18 && minute >= 0 && minute <= 29) return 8;
         else return 0;
