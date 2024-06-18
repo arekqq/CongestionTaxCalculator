@@ -26,8 +26,11 @@ public class TollFeeService {
         feeSchedule.put(LocalTime.of(18, 0), 8);
         feeSchedule.put(LocalTime.of(18, 30), 0);
     }
+
     public int getTollFee(LocalDateTime date, Vehicle vehicle) {
-        if (isTollFreeDate(date) || isTollFreeVehicle(vehicle)) return 0;
+        if (isTollFreeDate(date) || isTollFreeVehicle(vehicle)) {
+            return 0;
+        }
         LocalTime time = date.toLocalTime();
         LocalTime next = feeSchedule.ceilingKey(time);
         if (next == null) return 0;
