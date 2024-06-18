@@ -1,12 +1,12 @@
 package congestion.calculator.congestiontaxcalculator.service;
 
+import congestion.calculator.congestiontaxcalculator.dto.TaxResponse;
 import congestion.calculator.congestiontaxcalculator.enums.Vehicle;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumSet;
 
 import static congestion.calculator.congestiontaxcalculator.enums.Vehicle.BUS;
 import static congestion.calculator.congestiontaxcalculator.enums.Vehicle.DIPLOMAT;
@@ -18,20 +18,11 @@ import static congestion.calculator.congestiontaxcalculator.enums.Vehicle.MOTORC
 @Service
 public class CongestionTaxCalculatorService {
 
-    private static Map<Vehicle, Integer> tollFreeVehicles = new HashMap<>();
+    private static final EnumSet<Vehicle> tollFreeVehicles = EnumSet.of(
+        MOTORCYCLE, BUS, EMERGENCY, DIPLOMAT, FOREIGN, MILITARY
+    );
 
-    static {
-        tollFreeVehicles.put(MOTORCYCLE, 0);
-        tollFreeVehicles.put(BUS, 1);
-        tollFreeVehicles.put(EMERGENCY, 2);
-        tollFreeVehicles.put(DIPLOMAT, 3);
-        tollFreeVehicles.put(FOREIGN, 4);
-        tollFreeVehicles.put(MILITARY, 5);
-
-    }
-
-    public int getTax(Vehicle vehicle, Date[] dates)
-    {
+    public TaxResponse getTax(Vehicle vehicle, Date[] dates) {
         Date intervalStart = dates[0];
         int totalFee = 0;
 
@@ -52,16 +43,15 @@ public class CongestionTaxCalculatorService {
         }
 
         if (totalFee > 60) totalFee = 60;
-        return totalFee;
+        return new TaxResponse(totalFee);
     }
 
     private boolean isTollFreeVehicle(Vehicle vehicle) {
         if (vehicle == null) return false;
-        return tollFreeVehicles.containsKey(vehicle);
+        return tollFreeVehicles.contains(vehicle);
     }
 
-    public int getTollFee(Date date, Vehicle vehicle)
-    {
+    public int getTollFee(Date date, Vehicle vehicle) {
         if (isTollFreeDate(date) || isTollFreeVehicle(vehicle)) return 0;
 
         int hour = date.getHours();
@@ -79,8 +69,7 @@ public class CongestionTaxCalculatorService {
         else return 0;
     }
 
-    private Boolean isTollFreeDate(Date date)
-    {
+    private Boolean isTollFreeDate(Date date) {
         int year = date.getYear();
         int month = date.getMonth() + 1;
         int day = date.getDay() + 1;
@@ -88,8 +77,7 @@ public class CongestionTaxCalculatorService {
 
         if (day == Calendar.SATURDAY || day == Calendar.SUNDAY) return true;
 
-        if (year == 2013)
-        {
+        if (year == 2013) {
             if ((month == 1 && dayOfMonth == 1) ||
                 (month == 3 && (dayOfMonth == 28 || dayOfMonth == 29)) ||
                 (month == 4 && (dayOfMonth == 1 || dayOfMonth == 30)) ||
@@ -97,8 +85,7 @@ public class CongestionTaxCalculatorService {
                 (month == 6 && (dayOfMonth == 5 || dayOfMonth == 6 || dayOfMonth == 21)) ||
                 (month == 7) ||
                 (month == 11 && dayOfMonth == 1) ||
-                (month == 12 && (dayOfMonth == 24 || dayOfMonth == 25 || dayOfMonth == 26 || dayOfMonth == 31)))
-            {
+                (month == 12 && (dayOfMonth == 24 || dayOfMonth == 25 || dayOfMonth == 26 || dayOfMonth == 31))) {
                 return true;
             }
         }
