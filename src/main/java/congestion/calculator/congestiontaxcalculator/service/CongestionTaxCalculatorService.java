@@ -3,6 +3,7 @@ package congestion.calculator.congestiontaxcalculator.service;
 import congestion.calculator.congestiontaxcalculator.dto.TaxResponse;
 import congestion.calculator.congestiontaxcalculator.enums.Vehicle;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -12,6 +13,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CongestionTaxCalculatorService {
+
+    @Value("${toll.max-fee:60}")
+    private int maxFee;
+    @Value("${toll.short-time-period:60}")
+    private int shortTimePeriod;
 
     private final TollFeeService tollFeeService;
 
@@ -23,10 +29,9 @@ public class CongestionTaxCalculatorService {
             int nextFee = tollFeeService.getTollFee(date, vehicle);
             int tempFee = tollFeeService.getTollFee(intervalStart, vehicle);
 
-            long diffInMillies = Duration.between(date, intervalStart).toMillis();
-            long minutes = diffInMillies / 1000 / 60;
+            long minutes = Duration.between(date, intervalStart).toMinutes();
 
-            if (minutes <= 60) {
+            if (minutes <= shortTimePeriod) {
                 if (totalFee > 0) totalFee -= tempFee;
                 if (nextFee >= tempFee) tempFee = nextFee;
                 totalFee += tempFee;
@@ -35,7 +40,7 @@ public class CongestionTaxCalculatorService {
             }
         }
 
-        if (totalFee > 60) totalFee = 60;
+        if (totalFee > maxFee) totalFee = maxFee;
         return new TaxResponse(totalFee);
     }
 }
