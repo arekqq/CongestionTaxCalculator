@@ -7,3 +7,4 @@ My chain of thought explanation (almost the same what I wrote in the commit mess
 6. Changed Date to LocalDateTime.
 7. Optimized fee calculation and checking toll-free day.
 8. Prepared data as collections to be easy replaceable by sth from DB - if I'd have extra 1h or two I'd create H2 store for it.
+9. I am considering to utilize stream with reduce, but on current level, but I am not sure if it won't degrade the performance and check for short period tax.
