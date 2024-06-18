@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -22,7 +21,7 @@ public class TaxController {
     private final CongestionTaxCalculatorService congestionTaxCalculatorService;
 
     @GetMapping
-    public TaxResponse getTax(@RequestParam Vehicle vehicle, // TODO default REGULAR
+    public TaxResponse getTax(@RequestParam(defaultValue = "REGULAR") Vehicle vehicle,
                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) List<LocalDateTime> dates) {
         return congestionTaxCalculatorService.getTax(vehicle, dates);
     }
