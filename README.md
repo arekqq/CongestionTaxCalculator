@@ -2,9 +2,28 @@
 
 Welcome the Volvo Cars Congestion Tax Calculator assignment.
 
-This repository contains a developer [assignment](ASSIGNMENT.md) used as a basis for candidate intervew and evaluation.
+## Requirements
 
-Clone this repository to get started. Due to a number of reasons, not least privacy, you will be asked to zip your solution and mail it in, instead of submitting a pull-request. In order to maintain an unbiased reviewing process, please ensure to **keep your name or other Personal Identifiable Information (PII) from the code**.
+For build and runn the appn you need:
 
-./gradlew bootRun 
-on default it works on port 8080
+- [OpenJDK 21](https://openjdk.org/projects/jdk/21/)
+
+## Running the application locally
+
+```shell
+./gradlew bootRun
+```
+
+## Test the application locally using curl
+
+```shell
+curl -X GET "http://localhost:8080/tax/congestion?vehicle=REGULAR&dates=2013-01-14T21:00:00,2013-01-15T11:00:00,2013-01-15T12:00:00"
+```
+
+## Sample response
+
+```shell
+{
+    "tax": 60
+}
+```
