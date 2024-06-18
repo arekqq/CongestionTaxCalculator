@@ -20,7 +20,7 @@ public class TaxController {
     private final CongestionTaxCalculatorService congestionTaxCalculatorService;
 
     @GetMapping
-    public TaxResponse getTax(@RequestParam Vehicle vehicle,
+    public TaxResponse getTax(@RequestParam Vehicle vehicle, // TODO default REGULAR
                               @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss") Date[] dates) {
         return congestionTaxCalculatorService.getTax(vehicle, dates);
     }
